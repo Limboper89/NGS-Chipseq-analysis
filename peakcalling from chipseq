@@ -1,0 +1,56 @@
+#Fastqc seqencing read quality check by going in the input file directory first 
+
+fastqc <input>
+
+# or input path can be provided instead on going into directory using cd command
+
+fastqc <inputpath>
+# Trimming the adapters using trimgalore. Trimgalore require cutadapt in the computer
+# Installing trimgalore to a linuxmint system. linuxmint works same as ubuntu
+
+chmod +x trim_galore
+export PATH="/path/to/trim_galore_directory:$PATH"
+trim_galore --version
+
+# adapter trimming
+
+~/TrimGalore-0.6.7/trim_galore --version
+#dont forget to provide trimgalore path before giving any command.
+
+#using bwa for alignment. Hence, BWA is installed using following commands
+# Create a directory to store BWA
+mkdir -p ~/software/bwa
+
+# Change to the directory
+cd ~/software/bwa
+
+# Clone the BWA repository
+git clone https://github.com/lh3/bwa.git
+cd bwa
+make
+export PATH=~/software/bwa:$PATH
+
+#index the reference genome using bwa tool
+bwa index reference.fasta
+
+# pairwise alignment command
+bwa mem -M -t 4 reference.fasta read1.fq read2.fq > output.sam
+
+# for single read alignment command
+bwa mem -M -t 4 reference.fasta single_end_reads.fq > output.sam
+
+# convert alignment file sam to bam
+samtools view -bS alignment_filtered_forward.sam > alignment_filtered_forward.bam
+
+# sorting the bam file
+samtools sort alignment_filtered_forward.bam -o alignment_filtered_forward_sorted.bam
+
+# peakcalling anlysis using MACS2 through python plantfor in linux terminal
+#installing macs2
+pip install macs2
+
+# callpeak analysis using bam input file
+macs2 callpeak -t alignment_filtered_forward_sorted.bam -f BAM -g hs --outdir peaks_output
+
+
+
