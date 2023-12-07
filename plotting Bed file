@@ -1,0 +1,32 @@
+# Creating plot from bed file of alignment bam file
+pip install matplotlib seaborn
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
+
+# Read BED file into a DataFrame
+bed_file = "your_alignment_file.bed"
+df = pd.read_csv(bed_file, sep='\t', header=None, names=['chrom', 'start', 'end', 'name', 'score', 'strand'])
+
+# Customize the plot as needed
+plt.figure(figsize=(10, 6))
+sns.scatterplot(x='start', y='score', data=df, hue='chrom', palette='Set1', s=50)
+
+# Add labels and title
+plt.xlabel('Genomic Position')
+plt.ylabel('Score')
+plt.title('Alignment Scores Across Genomic Positions')
+
+# Add legend
+plt.legend(title='Chromosome')
+
+# Save the plot to a file
+output_file = "alignment_plot.png"
+plt.savefig(output_file, dpi=300)
+
+# Display the plot (optional)
+plt.show()
+
+
+python plot_alignment.py
